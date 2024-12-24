@@ -47,30 +47,31 @@ void ambilData() {
 // Fungsi untuk mencetak data
 void cetakData(const vector<Kelas>& data) {
     if (data.empty()) {
-        cout << "Tidak ada Data yang tersedia." << endl;
+        cout << "Tidak ada Data yang tersedia!" << endl;
         return;
     }
     cout << "DATA KELAS YANG SUDAH DI TEMBAHKAN !!\n";
+    cout << string(85, '-') << endl; // Garis pemisah
     cout << left << setw(15) << "ID Kelas"
-          << setw(20) << "Nama Kelas"
-          << setw(20) << "Wali Kelas"
-          << setw(15) << "Jumlah Siswa"
-          << setw(15) << "Tahun Ajaran" << endl;
+            << setw(20) << "Nama Kelas"
+            << setw(20) << "Wali Kelas"
+            << setw(15) << "Jumlah Siswa"
+            << setw(15) << "Tahun Ajaran" << endl;
     cout << string(85, '-') << endl; // Garis pemisah
 
     for (const auto& kelas : data) {
         cout  << setw(15) << kelas.idKelas
-              << setw(20) << kelas.namaKelas
-              << setw(20) << kelas.waliKelas
-              << setw(15) << kelas.jumlahSiswa
-              << setw(15) << kelas.tahunAjaran << endl;
+                << setw(20) << kelas.namaKelas
+                << setw(20) << kelas.waliKelas
+                << setw(15) << kelas.jumlahSiswa
+                << setw(15) << kelas.tahunAjaran << endl;
     }
     cout << string(85, '-') << endl; // Garis pemisah
 }
 
 // Fungsi menambahkan data
 void tambahData(vector<Kelas>& data) {
-    Kelas d;
+    Kelas d; // membuat variable dari referensi objek kelas
     cin.ignore(); // Mengabaikan newline yang tersisa di buffer
     cout << "Masukkan ID Kelas: "; getline(cin, d.idKelas);
     cout << "Masukkan Nama Kelas: "; getline(cin, d.namaKelas);
@@ -126,25 +127,28 @@ void hapusData(vector<Kelas>& dataKelas) {
     }
 
     dataKelas.erase(dataKelas.begin() + index - 1);
-    cout << "Data Berhasil Dihapus!" << endl;
+    cout << "Data Berhasil Dihapus, jangan lupa simpan perubahan!!" << endl;
 }
 
 // Fungsi untuk menyimpan data ke file
-void simpanData(const vector<Kelas>& dataKelas) {
-    ofstream file("data/kelas.txt");
-    if (file.is_open()) {
-      for (const auto& kelas : dataKelas) {
-          file  << kelas.idKelas << "\t"
-                << kelas.namaKelas << "\t"
-                << kelas.waliKelas << "\t"
-                << kelas.jumlahSiswa << "\t"
-                << kelas.tahunAjaran << endl;
-      }
-      file.close();
-      cout << "Data berhasil disimpan ke file "<< endl;
-    } else {
-      cout << "Data gagal disimpan ke file "<< endl;
+template <typename T>
+void simpanData(const vector<T>& data, const string save) {
+    ofstream file(save);
+
+    for (const auto& item : data) {
+        if (is_same<T, Kelas>::value) {
+            // Jika T adalah struct Kelas
+                file << item.idKelas << "\t"
+                    << item.namaKelas << "\t"
+                    << item.waliKelas << "\t"
+                    << item.jumlahSiswa << "\t"
+                    << item.tahunAjaran << endl;
+        }
     }
+
+    file.close();
+    cout << "Data Berhasil Disimpan kedalam file "<<save<<"!!";
+
 }
 
 void kelasMain() {
@@ -177,7 +181,7 @@ void kelasMain() {
                 cetakData(dataKelas);
                 break;
             case 5: {
-                simpanData(dataKelas);
+                simpanData(dataKelas, "data/kelas.txt");
                 break;
             }
             case 6:
@@ -193,21 +197,21 @@ void kelasMain() {
 //! program Utama
 
 int main() {
-  cout<<"\n===============================\n";
-  cout<<"PROJEK MANAJEMEN DATA SEKOLAH";
-  cout<<"\n===============================\n";
-  int pilih;
-  cout<<"1. Data Siswa\n2. Data Guru\n3. Data Kelas\n4. Keluar\nPilih Menu [1-4] : "; cin>>pilih;
-  switch(pilih) {
-    case 1:
-      break;
-    case 2:
-      break;
-    case 3:
-      kelasMain(); break;
-    default:
-      break;
-  }
+    cout<<"\n===============================\n";
+    cout<<"PROJEK MANAJEMEN DATA SEKOLAH";
+    cout<<"\n===============================\n";
+    int pilih;
+    cout<<"1. Data Siswa\n2. Data Guru\n3. Data Kelas\n4. Keluar\nPilih Menu [1-4] : "; cin>>pilih;
+    switch(pilih) {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            kelasMain(); break;
+        default:
+            break;
+    }
 
-  return 0;
+    return 0;
 }
