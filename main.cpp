@@ -10,7 +10,7 @@ struct Kelas {
     string idKelas;
     string namaKelas;
     string waliKelas;
-    int jumlahSiswa;
+    string jumlahSiswa;
     string tahunAjaran;
 };
 vector<Kelas> dataKelas; // Membuat vector dari data kelas
@@ -20,6 +20,8 @@ struct Siswa {
     string nama;
     string nis;
     string kelas;
+    string ttl;
+    string jk;
 };
 
 vector<Siswa> dataSiswa; // Membuat vector dari data siswa
@@ -32,18 +34,17 @@ void ambilData(const string& file) {
         return;
     }
 
-    string id, nama, val1, val3;
-    int val2;
+    string val1, val2, val3, val4, val5;
 
     // Membaca data dari file
-    while (data >> id >> ws) {  // Membaca ID dan mengabaikan whitespace
-        getline(data, nama, '\t');  // Membaca nama kelas hingga tab
-        data >> val1 >> ws;          // Membaca wali kelas dan mengabaikan whitespace
-        data >> val2 >> ws;          // Membaca jumlah siswa dan mengabaikan whitespace
-        getline(data, val3);         // Membaca tahun ajaran (sampai akhir baris)
+    while (data >> val1 >> ws) {  // Membaca ID dan mengabaikan whitespace
+        getline(data, val2, '\t');  // Membaca nama kelas hingga tab
+        data >> val3 >> ws;          // Membaca wali kelas dan mengabaikan whitespace
+        data >> val4 >> ws;          // Membaca jumlah siswa dan mengabaikan whitespace
+        getline(data, val5);         // Membaca tahun ajaran (sampai akhir baris)
 
         // Menambahkan data ke vector dataKelas
-        dataKelas.push_back({id, nama, val1, val2, val3});
+        dataKelas.push_back({val1, val2, val3, val4, val5});
     }
 
     data.close();  // Menutup file setelah selesai
@@ -79,63 +80,71 @@ void cetakData(const vector<T>& data) {
 }
 
 // Fungsi menambahkan data
-void tambahData(vector<Kelas>& data) {
-    Kelas d; // membuat variable dari referensi objek kelas
-    cin.ignore(); // Mengabaikan newline yang tersisa di buffer
-    cout << "Masukkan ID Kelas: "; getline(cin, d.idKelas);
-    cout << "Masukkan Nama Kelas: "; getline(cin, d.namaKelas);
-    cout << "Masukkan Wali Kelas: "; getline(cin, d.waliKelas);
-    cout << "Masukkan Jumlah Siswa Kelas: "; cin >> d.jumlahSiswa;
-    cin.ignore(); // Mengabaikan newline yang tersisa di buffer
-    cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
-    data.push_back(d);
-    cout << "Data Berhasil Ditambahkan!" << endl;
+template <typename B>
+void tambahData(vector<B>& data) {
+    if (is_same<B, Kelas>::value) {
+        Kelas d; // membuat variable dari referensi objek kelas
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan ID Kelas: "; getline(cin, d.idKelas);
+        cout << "Masukkan Nama Kelas: "; getline(cin, d.namaKelas);
+        cout << "Masukkan Wali Kelas: "; getline(cin, d.waliKelas);
+        cout << "Masukkan Jumlah Siswa Kelas: "; cin >> d.jumlahSiswa;
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
+        data.push_back(d);
+        cout << "Data Berhasil Ditambahkan!" << endl;
+    }
 }
 
 // Fungsi untuk mengubah data
-void ubahData(vector<Kelas>& dataKelas) {
-    if (dataKelas.empty()) {
+template <typename C>
+void ubahData(vector<C>& data) {
+    if (data.empty()) {
         cout << "Tidak ada data yang tersedia untuk diubah." << endl;
         return;
     }
-    cetakData(dataKelas);
+    cetakData(data);
 
     int index;
     cout << "Masukkan nomor data yang ingin diubah (mulai dari 1): ";
     cin >> index;
 
-    if (index < 1 || index > dataKelas.size()) {
+    if (index < 1 || index > data.size()) {
         cout << "Nomor tidak Valid!" << endl;
         return;
     }
-    Kelas& d = dataKelas[index - 1];
+    C& d = data[index - 1];
 
-    cin.ignore(); // Mengabaikan newline yang tersisa di buffer
-    cout << "Masukkan ID Kelas: "; getline(cin, d.idKelas);
-    cout << "Masukkan Nama Kelas: "; getline(cin, d.namaKelas);
-    cout << "Masukkan Wali Kelas: "; getline(cin, d.waliKelas);
-    cout << "Masukkan Jumlah Siswa: "; cin >> d.jumlahSiswa;
-    cin.ignore(); // Mengabaikan newline yang tersisa di buffer
-    cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
-    cout << "Data berhasil di Ubah!" << endl;
+    if (is_same<C, Kelas>::value) {
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan ID Kelas: "; getline(cin, d.idKelas);
+        cout << "Masukkan Nama Kelas: "; getline(cin, d.namaKelas);
+        cout << "Masukkan Wali Kelas: "; getline(cin, d.waliKelas);
+        cout << "Masukkan Jumlah Siswa: "; cin >> d.jumlahSiswa;
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
+        cout << "Data berhasil di Ubah!" << endl;
+    }
+
 }
 
 // Fungsi untuk menghapus data
-void hapusData(vector<Kelas>& dataKelas) {
-    if (dataKelas.empty()) {
+template <typename D>
+void hapusData(vector<D>& data) {
+    if (data.empty()) {
         cout << "Tidak ada data untuk dihapus!!" << endl;
         return;
     }
-    cetakData(dataKelas);
+    cetakData(data);
     int index;
     cout << "Masukkan data yang ingin dihapus (mulai dari 1): ";
     cin >> index;
-    if (index < 1 || index > dataKelas.size()) {
+    if (index < 1 || index > data.size()) {
         cout << "Nomor tidak valid" << endl;
         return;
     }
 
-    dataKelas.erase(dataKelas.begin() + index - 1);
+    data.erase(data.begin() + index - 1);
     cout << "Data Berhasil Dihapus, jangan lupa simpan perubahan!!" << endl;
 }
 
