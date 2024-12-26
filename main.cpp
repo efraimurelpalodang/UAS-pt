@@ -160,18 +160,19 @@ void simpanData(const vector<T>& data, const string& save) {
 }
 
 // Fungsi CRUD untuk Data Kelas
-void dataCrud(const string& judul, vector<Kelas>& data, const string& file) {
+template <typename A>
+void dataCrud(const string& judul, vector<A>& data, const string& file) {
     int pilihan;
     ambilData(file);
 
     do {
         cout << "\nMenu Pengelolaan Data " << judul << endl;
         cout << "------------------------------" << endl;
-        cout << "1. Tambah Data Kelas" << endl;
-        cout << "2. Ubah Data Kelas" << endl;
-        cout << "3. Hapus Data Kelas" << endl;
-        cout << "4. Tampilkan Data Kelas" << endl;
-        cout << "5. Simpan Data Kelas ke File" << endl;
+        cout << "1. Tambah Data " << judul << endl;
+        cout << "2. Ubah Data " << judul << endl;
+        cout << "3. Hapus Data " << judul << endl;
+        cout << "4. Tampilkan Data " << judul << endl;
+        cout << "5. Simpan Perubahan Data ke File" << endl;
         cout << "6. Keluar" << endl;
         cout << "Pilih opsi: ";
         cin >> pilihan;
