@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Struktur dari kelas
+//! DATA KELAS
 struct Kelas {
     string idKelas;
     string namaKelas;
@@ -13,60 +13,69 @@ struct Kelas {
     int jumlahSiswa;
     string tahunAjaran;
 };
+vector<Kelas> dataKelas; // Membuat vector dari data kelas
 
-// Membuat vector dari data kelas
-vector<Kelas> dataKelas;
+//! DATA SISWA
+struct Siswa {
+    string nama;
+    string nis;
+    string kelas;
+};
 
-//! FUNGSI INI MAU DI PERBAIKIN JADI PARAMETER AJA
-// fungsi untuk mengambil data
-void ambilData() {
-    ifstream data("data/kelas.txt");  // Membuka file untuk dibaca
-    if (!data.is_open()) {            // Memastikan file berhasil dibuka
+vector<Siswa> dataSiswa; // Membuat vector dari data siswa
+
+//! Fungsi untuk mengambil data dari file
+void ambilData(const string& file) {
+    ifstream data(file);  // Membuka file untuk dibaca
+    if (!data.is_open()) { // Memastikan file berhasil dibuka
         cout << "File tidak ditemukan!" << endl;
         return;
     }
 
-    string id, nama, wali, tahun;
-    int jumlah;
-    
+    string id, nama, val1, val3;
+    int val2;
+
     // Membaca data dari file
-    while (data >> id >> ws) {   // Membaca ID dan mengabaikan whitespace
+    while (data >> id >> ws) {  // Membaca ID dan mengabaikan whitespace
         getline(data, nama, '\t');  // Membaca nama kelas hingga tab
-        data >> wali >> ws;          // Membaca wali kelas dan mengabaikan whitespace
-        data >> jumlah >> ws;       // Membaca jumlah siswa dan mengabaikan whitespace
-        getline(data, tahun);       // Membaca tahun ajaran (sampai akhir baris)
+        data >> val1 >> ws;          // Membaca wali kelas dan mengabaikan whitespace
+        data >> val2 >> ws;          // Membaca jumlah siswa dan mengabaikan whitespace
+        getline(data, val3);         // Membaca tahun ajaran (sampai akhir baris)
 
         // Menambahkan data ke vector dataKelas
-        dataKelas.push_back({id, nama, wali, jumlah, tahun});
+        dataKelas.push_back({id, nama, val1, val2, val3});
     }
 
     data.close();  // Menutup file setelah selesai
 }
 
-
 // Fungsi untuk mencetak data
-void cetakData(const vector<Kelas>& data) {
+template <typename T>
+void cetakData(const vector<T>& data) {
     if (data.empty()) {
         cout << "Tidak ada Data yang tersedia!" << endl;
         return;
     }
-    cout << "DATA KELAS YANG SUDAH DI TEMBAHKAN !!\n";
-    cout << string(85, '-') << endl; // Garis pemisah
-    cout << left << setw(15) << "ID Kelas"
-            << setw(20) << "Nama Kelas"
-            << setw(20) << "Wali Kelas"
-            << setw(15) << "Jumlah Siswa"
-            << setw(15) << "Tahun Ajaran" << endl;
-    cout << string(85, '-') << endl; // Garis pemisah
 
-    for (const auto& kelas : data) {
-        cout  << setw(15) << kelas.idKelas
-                << setw(20) << kelas.namaKelas
-                << setw(20) << kelas.waliKelas
-                << setw(15) << kelas.jumlahSiswa
-                << setw(15) << kelas.tahunAjaran << endl;
+    if (is_same<T, Kelas>::value) {
+        cout << "\nDATA KELAS YANG SUDAH DI TEMBAHKAN !!\n";
+        cout << string(85, '-') << endl; // Garis pemisah
+        cout << left << setw(15) << "ID Kelas"
+                << setw(20) << "Nama Kelas"
+                << setw(20) << "Wali Kelas"
+                << setw(15) << "Jumlah Siswa"
+                << setw(15) << "Tahun Ajaran" << endl;
+        cout << string(85, '-') << endl; // Garis pemisah
+
+        for (const auto& kelas : data) {
+            cout << setw(15) << kelas.idKelas
+                    << setw(20) << kelas.namaKelas
+                    << setw(20) << kelas.waliKelas
+                    << setw(15) << kelas.jumlahSiswa
+                    << setw(15) << kelas.tahunAjaran << endl;
+        }
+        cout << string(85, '-') << endl; // Garis pemisah
     }
-    cout << string(85, '-') << endl; // Garis pemisah
 }
 
 // Fungsi menambahkan data
@@ -132,13 +141,13 @@ void hapusData(vector<Kelas>& dataKelas) {
 
 // Fungsi untuk menyimpan data ke file
 template <typename T>
-void simpanData(const vector<T>& data, const string save) {
+void simpanData(const vector<T>& data, const string& save) {
     ofstream file(save);
 
     for (const auto& item : data) {
         if (is_same<T, Kelas>::value) {
             // Jika T adalah struct Kelas
-                file << item.idKelas << "\t"
+            file << item.idKelas << "\t"
                     << item.namaKelas << "\t"
                     << item.waliKelas << "\t"
                     << item.jumlahSiswa << "\t"
@@ -147,16 +156,16 @@ void simpanData(const vector<T>& data, const string save) {
     }
 
     file.close();
-    cout << "Data Berhasil Disimpan kedalam file "<<save<<"!!";
-
+    cout << "Data Berhasil Disimpan kedalam file " << save << "!!" << endl;
 }
 
-void kelasMain() {
+// Fungsi CRUD untuk Data Kelas
+void dataCrud(const string& judul, vector<Kelas>& data, const string& file) {
     int pilihan;
-    ambilData();
-    
+    ambilData(file);
+
     do {
-        cout << "\nMENU PENGELOLAAN DATA KELAS" << endl;
+        cout << "\nMenu Pengelolaan Data " << judul << endl;
         cout << "------------------------------" << endl;
         cout << "1. Tambah Data Kelas" << endl;
         cout << "2. Ubah Data Kelas" << endl;
@@ -169,21 +178,20 @@ void kelasMain() {
 
         switch (pilihan) {
             case 1:
-                tambahData(dataKelas);
+                tambahData(data);
                 break;
             case 2:
-                ubahData(dataKelas);
+                ubahData(data);
                 break;
             case 3:
-                hapusData(dataKelas);
+                hapusData(data);
                 break;
             case 4:
-                cetakData(dataKelas);
+                cetakData(data);
                 break;
-            case 5: {
-                simpanData(dataKelas, "data/kelas.txt");
+            case 5:
+                simpanData(data, file);
                 break;
-            }
             case 6:
                 cout << "Keluar dari program." << endl;
                 break;
@@ -193,22 +201,21 @@ void kelasMain() {
     } while (pilihan != 6);
 }
 
-
 //! program Utama
-
 int main() {
-    cout<<"\n===============================\n";
-    cout<<"PROJEK MANAJEMEN DATA SEKOLAH";
-    cout<<"\n===============================\n";
+    cout << "\n===============================\n";
+    cout << "PROJEK MANAJEMEN DATA SEKOLAH";
+    cout << "\n===============================\n";
     int pilih;
-    cout<<"1. Data Siswa\n2. Data Guru\n3. Data Kelas\n4. Keluar\nPilih Menu [1-4] : "; cin>>pilih;
+    cout << "1. Data Siswa\n2. Data Guru\n3. Data Kelas\n4. Keluar\nPilih Menu [1-4] : "; cin >> pilih;
     switch(pilih) {
         case 1:
             break;
         case 2:
             break;
         case 3:
-            kelasMain(); break;
+            dataCrud("Kelas", dataKelas, "data/kelas.txt");
+            break;
         default:
             break;
     }
