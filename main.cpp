@@ -52,7 +52,7 @@ void ambilData(const string& file) {
 
 // Fungsi untuk mencetak data
 template <typename T>
-void cetakData(const vector<T>& data) {
+void cetakData(vector<T>& data) {
     if (data.empty()) {
         cout << "Tidak ada Data yang tersedia!" << endl;
         return;
@@ -77,6 +77,25 @@ void cetakData(const vector<T>& data) {
         }
         cout << string(85, '-') << endl; // Garis pemisah
     }
+    else if (is_same<T, Siswa>::value) {
+        cout << "\nDATA SISWA YANG SUDAH DI TEMBAHKAN !!\n";
+        cout << string(85, '-') << endl; // Garis pemisah
+        cout << left << setw(20) << "Nama Siswa"
+                << setw(15) << "NIS"
+                << setw(10) << "Kelas"
+                << setw(15) << "TTL"
+                << setw(15) << "Jenis Kelamin" << endl;
+        cout << string(85, '-') << endl; // Garis pemisah
+
+        for (const auto& siswa : data) {
+            cout << setw(20) << siswa.nama
+                    << setw(15) << siswa.nis
+                    << setw(10) << siswa.kelas
+                    << setw(15) << siswa.ttl
+                    << setw(15) << siswa.jk << endl;
+        }
+        cout << string(85, '-') << endl; // Garis pemisah
+    }
 }
 
 // Fungsi menambahkan data
@@ -91,6 +110,18 @@ void tambahData(vector<B>& data) {
         cout << "Masukkan Jumlah Siswa Kelas: "; cin >> d.jumlahSiswa;
         cin.ignore(); // Mengabaikan newline yang tersisa di buffer
         cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
+        data.push_back(d);
+        cout << "Data Berhasil Ditambahkan!" << endl;
+    }
+    else if (is_same<B, Siswa>::value) {
+        Siswa d; // membuat variable dari referensi objek kelas
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Nama Siswa: "; getline(cin, d.nama);
+        cout << "Masukkan NIS: "; getline(cin, d.nis);
+        cout << "Masukkan Kelas: "; getline(cin, d.kelas);
+        cout << "Masukkan TTL [tgl-bln-thn]: "; cin >> d.ttl;
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Jenis Kelamin: "; getline(cin, d.jk);
         data.push_back(d);
         cout << "Data Berhasil Ditambahkan!" << endl;
     }
@@ -124,6 +155,16 @@ void ubahData(vector<C>& data) {
         cin.ignore(); // Mengabaikan newline yang tersisa di buffer
         cout << "Masukkan Tahun Ajaran: "; getline(cin, d.tahunAjaran);
         cout << "Data berhasil di Ubah!" << endl;
+    }
+    else if (is_same<C, Siswa>::value) {
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Nama Siswa: "; getline(cin, d.nama);
+        cout << "Masukkan NIS: "; getline(cin, d.nis);
+        cout << "Masukkan Kelas: "; getline(cin, d.kelas);
+        cout << "Masukkan TTL [tgl-bln-thn]: "; cin >> d.ttl;
+        cin.ignore(); // Mengabaikan newline yang tersisa di buffer
+        cout << "Masukkan Jenis Kelamin: "; getline(cin, d.jk);
+        cout << "Data Berhasil Diubah!" << endl;
     }
 
 }
@@ -161,6 +202,14 @@ void simpanData(const vector<T>& data, const string& save) {
                     << item.waliKelas << "\t"
                     << item.jumlahSiswa << "\t"
                     << item.tahunAjaran << endl;
+        }
+        else if (is_same<T, Siswa>::value) {
+            // Jika T adalah struct Kelas
+            file << item.nama << "\t"
+                    << item.nis << "\t"
+                    << item.kelas << "\t"
+                    << item.ttl << "\t"
+                    << item.jk << endl;
         }
     }
 
